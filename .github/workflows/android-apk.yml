@@ -25,8 +25,7 @@ jobs:
           gradle-version: '8.7'
 
       - name: Descomprimir el proyecto
-        run: unzip -q PokeGuiaAndroid_Proyecto_Android_con_Voz.zip -d source
-
+        run: unzip -q $(find . -maxdepth 1 -iname '*.zip' -print -quit) -d sourc
       - name: Compilar el APK
         run: gradle --no-daemon assembleDebug
         working-directory: source/PokeGuiaAndroid
