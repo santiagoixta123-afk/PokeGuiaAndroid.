@@ -1,0 +1,39 @@
+name: Compilar APK de PokeGuía
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Preparar Android
+        uses: android-actions/setup-android@v3
+
+      - name: Preparar Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Descomprimir el proyecto
+        run: unzip -q PokeGuiaAndroid_Proyecto_Android_con_Voz.zip -d source
+
+      - name: Compilar el APK
+        run: gradle --no-daemon assembleDebug
+        working-directory: source/PokeGuiaAndroid
+
+      - name: Guardar el APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: PokeGuia-Android
+          path: source/PokeGuiaAndroid/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
