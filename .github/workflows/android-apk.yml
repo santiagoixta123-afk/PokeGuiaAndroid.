@@ -23,9 +23,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.7'
-
+ 
       - name: Descomprimir el proyecto
-        run: unzip -q $(find . -maxdepth 1 -iname '*.zip' -print -quit) -d sourc
+        run: |
+          ZIP_FILE="$(find . -type f -iname '*.zip' -print -quit)"
+          if [ -z "$ZIP_FILE" ]; then echo "No se encontró el ZIP"; find . -maxdepth 5 -type f; exit 1; fi
+          unzip -q "$ZIP_FILE" -d source
       - name: Compilar el APK
         run: gradle --no-daemon assembleDebug
         working-directory: source/PokeGuiaAndroid
